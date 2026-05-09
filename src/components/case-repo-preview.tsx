@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   RepoIcon,
   EyeIcon,
@@ -11,9 +12,14 @@ import {
   PlayIcon,
   TagIcon,
   GraphIcon,
+  GlobeIcon,
   BookIcon,
   DotFillIcon,
 } from "@primer/octicons-react";
+
+const DEMO_OWNER = "panforrest";
+const DEMO_NAME = "eb1a-2026";
+const REPO_BASE = `/${DEMO_OWNER}/${DEMO_NAME}`;
 
 /**
  * CaseRepoPreview — interactive embedded mockup of a Case Repo,
@@ -39,9 +45,13 @@ export function CaseRepoPreview() {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-base">
             <RepoIcon size={16} className="opacity-70" />
-            <a className="gh-link font-semibold">panforrest</a>
+            <Link href={`/${DEMO_OWNER}`} className="gh-link font-semibold">
+              {DEMO_OWNER}
+            </Link>
             <span style={{ color: "var(--gh-fg-muted)" }}>/</span>
-            <a className="gh-link font-semibold">eb1a-2026</a>
+            <Link href={REPO_BASE} className="gh-link font-semibold">
+              {DEMO_NAME}
+            </Link>
             <span
               className="ml-2 rounded-full border px-2 py-0.5 text-xs font-medium"
               style={{
@@ -68,22 +78,43 @@ export function CaseRepoPreview() {
         <nav className="mt-4 flex items-center gap-1 overflow-x-auto -mb-px">
           <Tab
             active
+            href={REPO_BASE}
             icon={<CodeIcon size={16} />}
             label="Code"
           />
           <Tab
+            href={`${REPO_BASE}/issues`}
             icon={<IssueOpenedIcon size={16} />}
             label="Issues"
             count="8"
           />
           <Tab
+            href={`${REPO_BASE}/pulls`}
             icon={<GitPullRequestIcon size={16} />}
             label="Pull requests"
             count="3"
           />
-          <Tab icon={<PlayIcon size={16} />} label="Actions" />
-          <Tab icon={<TagIcon size={16} />} label="Releases" count="4" />
-          <Tab icon={<GraphIcon size={16} />} label="Insights" />
+          <Tab
+            href={`${REPO_BASE}/actions`}
+            icon={<PlayIcon size={16} />}
+            label="Actions"
+          />
+          <Tab
+            href={`${REPO_BASE}/releases`}
+            icon={<TagIcon size={16} />}
+            label="Releases"
+            count="4"
+          />
+          <Tab
+            href={`${REPO_BASE}/graph`}
+            icon={<GraphIcon size={16} />}
+            label="Evidence Graph"
+          />
+          <Tab
+            href={`${REPO_BASE}/research`}
+            icon={<GlobeIcon size={16} />}
+            label="Research"
+          />
         </nav>
       </div>
 
@@ -349,19 +380,22 @@ function RepoBtn({
 }
 
 function Tab({
+  href,
   icon,
   label,
   count,
   active,
 }: {
+  href: string;
   icon: React.ReactNode;
   label: string;
   count?: string;
   active?: boolean;
 }) {
   return (
-    <button
-      className="flex items-center gap-2 px-3 py-2 text-sm border-b-2"
+    <Link
+      href={href}
+      className="flex items-center gap-2 px-3 py-2 text-sm border-b-2 whitespace-nowrap rounded-t hover:bg-[var(--gh-canvas-subtle)]"
       style={{
         borderBottomColor: active ? "var(--gh-attention-fg)" : "transparent",
         color: active ? "var(--gh-fg-default)" : "var(--gh-fg-muted)",
@@ -381,7 +415,7 @@ function Tab({
           {count}
         </span>
       )}
-    </button>
+    </Link>
   );
 }
 
@@ -453,9 +487,12 @@ function CriterionRow({
 
 function ReleaseRow({ tag, latest }: { tag: string; latest?: boolean }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <Link
+      href={`${REPO_BASE}/releases`}
+      className="flex items-center gap-2 text-xs"
+    >
       <TagIcon size={12} className="opacity-60" />
-      <a className="gh-link flex-1 truncate">{tag}</a>
+      <span className="gh-link flex-1 truncate">{tag}</span>
       {latest && (
         <span
           className="rounded-full px-2 text-[10px] font-semibold"
@@ -467,7 +504,7 @@ function ReleaseRow({ tag, latest }: { tag: string; latest?: boolean }) {
           Latest
         </span>
       )}
-    </div>
+    </Link>
   );
 }
 
