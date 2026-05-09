@@ -1,10 +1,5 @@
-import { CaseLoaded } from "./case-loaded";
+import { CodeTab } from "./code-tab";
 
-export default async function CasePage({
-  params,
-}: {
-  params: Promise<{ owner: string; name: string }>;
-}) {
-  const { owner, name } = await params;
-  return <CaseLoaded owner={owner} name={name} />;
+export default function CasePage() {
+  return <CodeTab />;
 }
