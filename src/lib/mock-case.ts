@@ -117,13 +117,13 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
     return { ...c, ...m };
   });
 
-  const issues = [
+  const issues: Case["issues"] = [
     {
       number: 1,
       title: "Missing recommendation letter from Prof. Chen",
       body: "Letter from Prof. Chen (Stanford) was promised in March but not yet received. Independent expert letter is critical to satisfy authorship + original-contributions criteria.",
-      state: "open" as const,
-      labels: ["blocker", "recommendation-letter", "priority-high"] as const,
+      state: "open",
+      labels: ["blocker", "recommendation-letter", "priority-high"],
       criterionId: "original-contributions",
       suggestedActions: [
         "Send polite reminder email referencing March 14 conversation",
@@ -136,8 +136,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 2,
       title: "Press coverage gap — only 1 article cited",
       body: "Petition needs 2-3 articles in major media (definition: Tier-1 publication, original reporting). Current evidence: 1 Medium feature (insufficient).",
-      state: "open" as const,
-      labels: ["evidence", "press", "priority-high"] as const,
+      state: "open",
+      labels: ["evidence", "press", "priority-high"],
       criterionId: "press",
       suggestedActions: [
         "Pitch TechCrunch with patent #2 angle",
@@ -150,8 +150,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 3,
       title: "Award submissions pending",
       body: "ACM Best Paper submission deadline: June 15. Forbes 30U30 nomination window opens August.",
-      state: "open" as const,
-      labels: ["award", "priority-high"] as const,
+      state: "open",
+      labels: ["award", "priority-high"],
       criterionId: "awards",
       suggestedActions: [
         "Finalize ACM Best Paper PDF by June 1",
@@ -164,8 +164,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 4,
       title: "Salary documentation missing",
       body: "Need offer letter, W-2, and BLS comparison data to substantiate high-salary criterion.",
-      state: "open" as const,
-      labels: ["evidence", "form"] as const,
+      state: "open",
+      labels: ["evidence", "form"],
       criterionId: "high-salary",
       suggestedActions: [
         "Request HR letter quoting current base + bonus",
@@ -177,8 +177,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 5,
       title: "Citation count screenshot needed",
       body: "Google Scholar h-index 5, 240 citations. Need timestamped screenshot.",
-      state: "open" as const,
-      labels: ["evidence", "publication", "good-first-task"] as const,
+      state: "open",
+      labels: ["evidence", "publication", "good-first-task"],
       criterionId: "authorship",
       suggestedActions: [
         "Screenshot Google Scholar profile",
@@ -190,8 +190,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 6,
       title: "Patent USPTO certified copies",
       body: "Need certified copies of patents US-11,234,567 and US-11,345,678.",
-      state: "open" as const,
-      labels: ["evidence", "form"] as const,
+      state: "open",
+      labels: ["evidence", "form"],
       criterionId: "original-contributions",
       suggestedActions: ["Order certified copies from USPTO ($25 each)"],
       createdAt: nowIso(-1),
@@ -200,8 +200,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 7,
       title: "Draft narrative for original-contributions section",
       body: "Need a 2-page narrative tying patents + OSS + papers into a coherent contributions story.",
-      state: "open" as const,
-      labels: ["narrative"] as const,
+      state: "open",
+      labels: ["narrative"],
       criterionId: "original-contributions",
       suggestedActions: ["Outline 3 contribution arcs", "Draft 2 paragraphs per arc"],
       createdAt: nowIso(0),
@@ -210,8 +210,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 8,
       title: "Identify 6th recommender",
       body: "Have 5 confirmed recommenders. Need 1 more independent expert.",
-      state: "open" as const,
-      labels: ["recommendation-letter"] as const,
+      state: "open",
+      labels: ["recommendation-letter"],
       criterionId: "original-contributions",
       suggestedActions: [
         "Ask Prof. Chen for intro to her former PhD",
@@ -223,8 +223,8 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 9,
       title: "Patent USPTO citation collected",
       body: "USPTO citation pulled and added to evidence/.",
-      state: "closed" as const,
-      labels: ["evidence"] as const,
+      state: "closed",
+      labels: ["evidence"],
       criterionId: "original-contributions",
       suggestedActions: [],
       createdAt: nowIso(-10),
@@ -233,26 +233,26 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       number: 10,
       title: "Initial profile parsed and structured",
       body: "Resume + LinkedIn + GitHub parsed. Initial criterion mapping complete.",
-      state: "closed" as const,
-      labels: ["good-first-task"] as const,
+      state: "closed",
+      labels: ["good-first-task"],
       suggestedActions: [],
       createdAt: nowIso(-14),
     },
   ];
 
-  const releases = [
+  const releases: Case["releases"] = [
     {
       tag: "v0.4",
       title: "I-140 Filed (target)",
       body: "Petition assembled, signed, mailed to USCIS Texas Service Center with Premium Processing.",
-      state: "upcoming" as const,
+      state: "upcoming",
       date: nowIso(60),
     },
     {
       tag: "v0.3",
       title: "Letters Collected",
       body: "All 6 recommendation letters received and reviewed.",
-      state: "upcoming" as const,
+      state: "upcoming",
       date: nowIso(28),
       isLatest: true,
     },
@@ -260,14 +260,14 @@ Readiness Score **62 / 100**. Reaching **80** requires closing the Press and Awa
       tag: "v0.2",
       title: "Evidence Mapped",
       body: "Every artifact tagged to one or more EB-1A criteria.",
-      state: "shipped" as const,
+      state: "shipped",
       date: nowIso(-7),
     },
     {
       tag: "v0.1",
       title: "Case Initialized",
       body: "Resume, LinkedIn, GitHub, publications ingested. Strategy README generated.",
-      state: "shipped" as const,
+      state: "shipped",
       date: nowIso(-14),
     },
   ];
@@ -438,7 +438,7 @@ function buildGenericMock(input: OnboardingInputs): Case {
     tag: `v0.${i + 1}`,
     title: m,
     body: `Milestone ${i + 1} of ${milestones.length}.`,
-    state: i === 0 ? ("shipped" as const) : ("upcoming" as const),
+    state: (i === 0 ? "shipped" : "upcoming") as "shipped" | "upcoming",
     date: nowIso(i === 0 ? -7 : i * 14),
     isLatest: i === 1,
   }));
