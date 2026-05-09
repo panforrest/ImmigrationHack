@@ -6,7 +6,6 @@ import {
   SyncIcon,
   LinkExternalIcon,
   SparkleFillIcon,
-  ZapIcon,
   CheckCircleFillIcon,
 } from "@primer/octicons-react";
 import { useCase } from "@/lib/case-context";
@@ -65,18 +64,6 @@ export function ResearchView() {
               >
                 <CheckCircleFillIcon size={10} />
                 LIVE · Tavily
-              </span>
-            )}
-            {!isLive && panels && (
-              <span
-                className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                style={{
-                  background: "var(--gh-attention-subtle)",
-                  color: "var(--gh-attention-fg)",
-                }}
-              >
-                <ZapIcon size={10} />
-                Mock fallback
               </span>
             )}
           </h2>

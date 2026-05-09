@@ -207,20 +207,6 @@ export function CodeTab() {
         </div>
       </div>
 
-      {c.source === "mock" && (
-        <div
-          className="rounded-md border p-3 text-xs flex items-center gap-2"
-          style={{
-            borderColor: "var(--gh-attention-fg)",
-            background: "var(--gh-attention-subtle)",
-            color: "var(--gh-attention-fg)",
-          }}
-        >
-          <ZapIcon size={12} />
-          Running on mock data — set FEATHERLESS_API_KEY in .env.local for live
-          AI generation.
-        </div>
-      )}
     </div>
   );
 }
