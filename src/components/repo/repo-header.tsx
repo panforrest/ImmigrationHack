@@ -17,8 +17,10 @@ import {
   LockIcon,
   PinIcon,
   TriangleDownIcon,
+  SparkleFillIcon,
 } from "@primer/octicons-react";
 import { useCase } from "@/lib/case-context";
+import { ASK_CASE_EVENT } from "./case-chat";
 
 export function RepoHeader() {
   const c = useCase();
@@ -68,6 +70,23 @@ export function RepoHeader() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() =>
+                document.dispatchEvent(new Event(ASK_CASE_EVENT))
+              }
+              className="flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-semibold transition-transform hover:scale-105"
+              style={{
+                borderColor: "transparent",
+                background:
+                  "linear-gradient(135deg, #1f6feb 0%, #a371f7 100%)",
+                color: "#fff",
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
+              }}
+            >
+              <SparkleFillIcon size={12} />
+              <span>Ask AI</span>
+            </button>
             <RepoActionBtn
               icon={<PinIcon size={14} />}
               label="Pin"

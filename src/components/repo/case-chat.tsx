@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import {
-  CommentDiscussionIcon,
   XIcon,
   PaperAirplaneIcon,
   SparkleFillIcon,
@@ -19,6 +18,11 @@ const PRESETS = [
   "Compare my profile to approved EB-1A cases",
 ];
 
+/** Custom event used by RepoHeader's inline "Ask AI" button so it can
+ *  toggle the assistant even when the floating launcher is hidden by
+ *  a browser extension. */
+export const ASK_CASE_EVENT = "immigrationhack:open-case-chat";
+
 export function CaseChat() {
   const c = useCase();
   const [open, setOpen] = useState(false);
@@ -32,6 +36,13 @@ export function CaseChat() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, streaming]);
+
+  // Allow an external trigger (the inline header button) to open this drawer.
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    document.addEventListener(ASK_CASE_EVENT, handler);
+    return () => document.removeEventListener(ASK_CASE_EVENT, handler);
+  }, []);
 
   async function send(text: string) {
     if (!text.trim() || streaming) return;
@@ -86,30 +97,49 @@ export function CaseChat() {
 
   return (
     <>
-      {/* Floating launcher */}
+      {/* Floating launcher — uses inline styles instead of utility classes
+          like `fixed bottom-5 right-5 rounded-full z-50` so adblockers
+          that match common chat-widget patterns don't hide it. */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-2xl transition-transform hover:scale-105"
+          aria-label="Open case copilot"
+          data-role="case-copilot-launcher"
           style={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+            zIndex: 2147483646,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "12px 16px",
+            border: 0,
+            borderRadius: 999,
+            cursor: "pointer",
             background:
               "linear-gradient(135deg, #1f6feb 0%, #a371f7 100%)",
             color: "#fff",
+            fontSize: 14,
+            fontWeight: 600,
             boxShadow:
               "0 12px 32px rgba(56,139,253,0.45), 0 0 0 1px rgba(255,255,255,0.1)",
           }}
-          aria-label="Open AI assistant"
         >
           <SparkleFillIcon size={16} />
-          <span className="text-sm font-semibold">Ask your case</span>
+          <span>Ask your case</span>
         </button>
       )}
 
       {/* Drawer */}
       {open && (
         <div
-          className="fixed bottom-5 right-5 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-2rem)] flex flex-col rounded-xl border shadow-2xl overflow-hidden"
+          className="w-[380px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-2rem)] flex flex-col rounded-xl border overflow-hidden"
           style={{
+            position: "fixed",
+            bottom: 20,
+            right: 20,
+            zIndex: 2147483646,
             background: "var(--gh-canvas-default)",
             borderColor: "var(--gh-border-default)",
             boxShadow:
