@@ -12,6 +12,8 @@
 
 Built at **Build for the Border — Immigrant Hackathon NYC** · May 9, 2026
 
+🚀 **Live demo:** [immigration-hack.vercel.app](https://immigration-hack.vercel.app)
+
 </div>
 
 ---
@@ -119,28 +121,33 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Project status
 
-🛠️ **In active build** — shipped at the Immigrant Hackathon NYC, May 9, 2026.
+🚢 **Shipped** at the Immigrant Hackathon NYC — May 9, 2026.
 
 | Step | Status |
 |---|---|
 | 0 · Repo + env scaffolding | ✅ |
-| 1 · Next.js + Tailwind + GitHub design system | 🔜 |
-| 2 · Landing page | ⏳ |
-| 3 · Onboarding wizard | ⏳ |
-| 4 · Featherless.ai case generation | ⏳ |
-| 5 · Case Repo workspace shell | ⏳ |
-| 6 · README tab | ⏳ |
-| 7 · Issues tab | ⏳ |
+| 1 · Next.js + Tailwind + GitHub design system | ✅ |
+| 2 · Landing page | ✅ |
+| 3 · Onboarding wizard | ✅ |
+| 4 · Featherless.ai case generation | ✅ |
+| 5 · Case Repo workspace shell | ✅ |
+| 6 · README tab | ✅ |
+| 7 · Issues tab | ✅ |
 | 8 · Releases timeline | ⏳ |
-| 9 · Evidence Graph | ⏳ |
-| 10 · Tavily Research tab | ⏳ |
-| 11 · AI Chat Assistant | ⏳ |
+| 9 · Evidence Graph | ✅ |
+| 10 · Tavily Research tab | ✅ |
+| 11 · AI Chat Assistant | ✅ |
 | 12 · Community / Explore | ⏳ |
-| 13 · Vercel deploy | ⏳ |
+| 13 · Vercel deploy | ✅ |
 
-## Author
+## Team
 
-**Forrest Pan** · [GitHub](https://github.com/panforrest) · [LinkedIn](https://www.linkedin.com/in/forrest-pan-153733232/) · [YouTube](https://www.youtube.com/@forrestpan1761)
+Built in 8 hours at Build for the Border — Immigrant Hackathon NYC.
+
+- **Forrest Pan** — [GitHub](https://github.com/panforrest) · [LinkedIn](https://www.linkedin.com/in/forrest-pan-153733232/) · [YouTube](https://www.youtube.com/@forrestpan1761)
+- **Frank Yu**
+- **Xun Liu**
+- **Jin Thakur**
 
 ## License
 

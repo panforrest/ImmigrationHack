@@ -105,26 +105,17 @@ export function SiteFooter() {
                   target="_blank"
                   className="gh-link"
                 >
-                  @panforrest
+                  Forrest Pan
                 </a>
               </li>
               <li>
-                <a
-                  href="https://www.linkedin.com/in/forrest-pan-153733232/"
-                  target="_blank"
-                  className="gh-link"
-                >
-                  LinkedIn
-                </a>
+                <span style={{ color: "var(--gh-fg-default)" }}>Frank Yu</span>
               </li>
               <li>
-                <a
-                  href="https://www.youtube.com/@forrestpan1761"
-                  target="_blank"
-                  className="gh-link"
-                >
-                  YouTube
-                </a>
+                <span style={{ color: "var(--gh-fg-default)" }}>Xun Liu</span>
+              </li>
+              <li>
+                <span style={{ color: "var(--gh-fg-default)" }}>Jin Thakur</span>
               </li>
             </ul>
           </div>
