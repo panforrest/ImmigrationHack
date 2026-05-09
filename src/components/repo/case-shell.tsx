@@ -6,6 +6,7 @@ import { loadOrSeedDemoCase } from "@/lib/case-store";
 import { CaseProvider } from "@/lib/case-context";
 import { RepoHeader } from "./repo-header";
 import { RepoSidebar } from "./repo-sidebar";
+import { CaseChat } from "./case-chat";
 
 /**
  * Client wrapper for /[owner]/[name]/* routes.
@@ -54,6 +55,7 @@ export function CaseShell({
           </div>
         </div>
       </div>
+      <CaseChat />
     </CaseProvider>
   );
 }
