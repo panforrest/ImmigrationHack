@@ -14,14 +14,15 @@ import {
   InfoIcon,
   XIcon,
   FileIcon,
+  ZapIcon,
+  AlertIcon,
 } from "@primer/octicons-react";
+import { createCase } from "./actions";
+import { saveCase } from "@/lib/case-store";
+import type { VisaTemplate, Visibility } from "@/lib/types";
 
-const VISA_TEMPLATES = [
-  {
-    id: "none",
-    label: "No template",
-    desc: "Start from scratch",
-  },
+const VISA_TEMPLATES: { id: VisaTemplate; label: string; desc: string }[] = [
+  { id: "none", label: "No template", desc: "Start from scratch" },
   {
     id: "eb1a",
     label: "EB-1A · Extraordinary Ability",
@@ -52,6 +53,14 @@ const FUN_NAMES = [
   "visa-velocity",
 ];
 
+const PROGRESS_STEPS = [
+  "Reading your inputs...",
+  "Mapping evidence to USCIS criteria...",
+  "Drafting your visa strategy...",
+  "Filing initial issues for every gap...",
+  "Tagging milestones as releases...",
+];
+
 export default function NewCasePage() {
   const router = useRouter();
   const [owner] = useState("panforrest");
@@ -59,15 +68,17 @@ export default function NewCasePage() {
   const [description, setDescription] = useState(
     "EB-1A petition · ML Engineer · Filing target Q3 2026"
   );
-  const [visibility, setVisibility] = useState<"private" | "public">("private");
-  const [template, setTemplate] = useState("eb1a");
+  const [visibility, setVisibility] = useState<Visibility>("private");
+  const [template, setTemplate] = useState<VisaTemplate>("eb1a");
   const [initReadme, setInitReadme] = useState(true);
   const [initRedaction, setInitRedaction] = useState(true);
   const [files, setFiles] = useState<File[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [progressStep, setProgressStep] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const placeholder = FUN_NAMES[Math.floor(Math.random() * FUN_NAMES.length)];
+  const placeholder = FUN_NAMES[0];
   const repoNameValid = /^[a-z0-9][a-z0-9-]*$/i.test(repoName);
 
   function onDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -84,18 +95,127 @@ export default function NewCasePage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!repoNameValid) return;
+    setError(null);
     setSubmitting(true);
-    // Step 4 will replace this with the Featherless.ai server action.
-    setTimeout(() => {
-      router.push(`/${owner}/${repoName}`);
-    }, 600);
+    setProgressStep(0);
+
+    const progressTimer = setInterval(() => {
+      setProgressStep((s) =>
+        s < PROGRESS_STEPS.length - 1 ? s + 1 : s
+      );
+    }, 700);
+
+    try {
+      const result = await createCase({
+        owner,
+        name: repoName,
+        description,
+        visa: template,
+        visibility,
+        initReadme,
+        initRedaction,
+        files: files.map((f) => ({
+          name: f.name,
+          size: f.size,
+          type: f.type || "application/octet-stream",
+        })),
+      });
+
+      clearInterval(progressTimer);
+
+      if (!result.ok) {
+        setError(result.error);
+        setSubmitting(false);
+        return;
+      }
+
+      saveCase(result.case);
+      setProgressStep(PROGRESS_STEPS.length - 1);
+      setTimeout(() => router.push(`/${owner}/${repoName}`), 250);
+    } catch (err) {
+      clearInterval(progressTimer);
+      setError(err instanceof Error ? err.message : "Unknown error");
+      setSubmitting(false);
+    }
+  }
+
+  if (submitting) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-20">
+        <div
+          className="rounded-md border p-8"
+          style={{
+            borderColor: "var(--gh-border-default)",
+            background: "var(--gh-canvas-subtle)",
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <span style={{ color: "var(--gh-attention-fg)" }}>
+              <ZapIcon size={20} />
+            </span>
+            <h2 className="text-lg font-semibold">
+              Generating your case repository
+            </h2>
+          </div>
+          <p
+            className="mt-2 text-sm"
+            style={{ color: "var(--gh-fg-muted)" }}
+          >
+            Featherless.ai is reading your inputs and building a structured
+            Case Repo. This typically takes 5–15 seconds.
+          </p>
+
+          <ul className="mt-6 space-y-2.5">
+            {PROGRESS_STEPS.map((label, i) => (
+              <li key={label} className="flex items-center gap-3 text-sm">
+                {i < progressStep ? (
+                  <span style={{ color: "var(--gh-success-fg)" }}>
+                    <CheckCircleFillIcon size={16} />
+                  </span>
+                ) : i === progressStep ? (
+                  <span
+                    className="inline-flex h-4 w-4 rounded-full border-2 animate-spin"
+                    style={{
+                      borderColor: "var(--gh-attention-fg) transparent transparent transparent",
+                    }}
+                  />
+                ) : (
+                  <span
+                    className="inline-flex h-4 w-4 rounded-full border"
+                    style={{ borderColor: "var(--gh-border-default)" }}
+                  />
+                )}
+                <span
+                  style={{
+                    color:
+                      i <= progressStep
+                        ? "var(--gh-fg-default)"
+                        : "var(--gh-fg-muted)",
+                  }}
+                >
+                  {label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <header className="pb-6 border-b" style={{ borderColor: "var(--gh-border-muted)" }}>
-        <h1 className="text-2xl font-semibold">Create a new case repository</h1>
-        <p className="mt-2 text-sm" style={{ color: "var(--gh-fg-muted)" }}>
+      <header
+        className="pb-6 border-b"
+        style={{ borderColor: "var(--gh-border-muted)" }}
+      >
+        <h1 className="text-2xl font-semibold">
+          Create a new case repository
+        </h1>
+        <p
+          className="mt-2 text-sm"
+          style={{ color: "var(--gh-fg-muted)" }}
+        >
           A case repository contains your visa journey: evidence, narrative,
           mentor reviews, milestones, and an AI-generated strategy. Required
           fields are marked with an asterisk{" "}
@@ -103,14 +223,34 @@ export default function NewCasePage() {
         </p>
       </header>
 
+      {error && (
+        <div
+          className="mt-6 rounded-md border p-4 flex items-start gap-3"
+          style={{
+            borderColor: "var(--gh-danger-fg)",
+            background: "var(--gh-danger-subtle)",
+          }}
+        >
+          <span style={{ color: "var(--gh-danger-fg)" }}>
+            <AlertIcon size={16} />
+          </span>
+          <div className="text-sm">
+            <div className="font-semibold">Generation failed</div>
+            <div style={{ color: "var(--gh-fg-muted)" }}>{error}</div>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={onSubmit} className="space-y-8 pt-8">
-        {/* Required: owner + name */}
         <Field
           label="Repository name"
           required
           hint={
             repoNameValid && repoName ? (
-              <span style={{ color: "var(--gh-success-fg)" }}>
+              <span
+                className="inline-flex items-center gap-1"
+                style={{ color: "var(--gh-success-fg)" }}
+              >
                 <CheckCircleFillIcon size={12} /> {owner}/{repoName} is
                 available.
               </span>
@@ -159,9 +299,10 @@ export default function NewCasePage() {
               required
               className="flex-1 min-w-[200px] rounded-md border px-3 py-1.5 text-sm font-mono outline-none focus:border-[var(--gh-accent-emphasis)]"
               style={{
-                borderColor: repoName && !repoNameValid
-                  ? "var(--gh-danger-fg)"
-                  : "var(--gh-border-default)",
+                borderColor:
+                  repoName && !repoNameValid
+                    ? "var(--gh-danger-fg)"
+                    : "var(--gh-border-default)",
                 background: "var(--gh-canvas-default)",
                 color: "var(--gh-fg-default)",
               }}
@@ -169,7 +310,6 @@ export default function NewCasePage() {
           </div>
         </Field>
 
-        {/* Description */}
         <Field
           label="Description"
           hint={<>Optional. Give your case a one-line summary.</>}
@@ -189,7 +329,6 @@ export default function NewCasePage() {
 
         <hr style={{ borderColor: "var(--gh-border-muted)" }} />
 
-        {/* Visibility */}
         <fieldset>
           <legend className="text-sm font-semibold mb-3">Visibility</legend>
           <div className="space-y-2">
@@ -212,7 +351,6 @@ export default function NewCasePage() {
 
         <hr style={{ borderColor: "var(--gh-border-muted)" }} />
 
-        {/* Visa template */}
         <Field
           label="Visa template"
           hint={
@@ -262,7 +400,6 @@ export default function NewCasePage() {
 
         <hr style={{ borderColor: "var(--gh-border-muted)" }} />
 
-        {/* Initialize options */}
         <fieldset>
           <legend className="text-sm font-semibold mb-3">
             Initialize this case repository with:
@@ -285,7 +422,6 @@ export default function NewCasePage() {
 
         <hr style={{ borderColor: "var(--gh-border-muted)" }} />
 
-        {/* Drag-drop */}
         <Field
           label="Initialize from your story"
           hint={
@@ -388,15 +524,15 @@ export default function NewCasePage() {
           </Link>
           <button
             type="submit"
-            disabled={!repoNameValid || submitting}
+            disabled={!repoNameValid}
             className="gh-btn gh-btn-primary"
             style={{
-              opacity: repoNameValid && !submitting ? 1 : 0.5,
-              cursor: repoNameValid && !submitting ? "pointer" : "not-allowed",
+              opacity: repoNameValid ? 1 : 0.5,
+              cursor: repoNameValid ? "pointer" : "not-allowed",
             }}
           >
             <RepoIcon size={16} />
-            {submitting ? "Creating..." : "Create case repository"}
+            Create case repository
           </button>
         </div>
       </form>
