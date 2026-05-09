@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Case } from "@/lib/types";
 import { loadOrSeedDemoCase } from "@/lib/case-store";
 import { CaseProvider } from "@/lib/case-context";
@@ -9,9 +9,11 @@ import { RepoSidebar } from "./repo-sidebar";
 import { CaseChat } from "./case-chat";
 
 /**
- * Client wrapper for /[owner]/[name]/* routes.
- * Loads the Case from localStorage (or seeds a demo) and renders
- * the GitHub-faithful repo chrome around the current page.
+ * Client-only repo shell. Loaded via dynamic({ ssr:false }) from
+ * case-shell-mount.tsx so that the lazy state initializer can
+ * synchronously read localStorage on the very first render. This
+ * eliminates the SSR -> hydration flicker that previously made the
+ * floating chat launcher appear and disappear on Vercel.
  */
 export function CaseShell({
   owner,
@@ -22,27 +24,7 @@ export function CaseShell({
   name: string;
   children: React.ReactNode;
 }) {
-  const [c, setC] = useState<Case | null>(null);
-
-  useEffect(() => {
-    setC(loadOrSeedDemoCase(owner, name));
-  }, [owner, name]);
-
-  if (!c) {
-    return (
-      <div className="mx-auto max-w-[1280px] px-6 py-20">
-        <div
-          className="rounded-md border p-10 text-center"
-          style={{
-            borderColor: "var(--gh-border-muted)",
-            background: "var(--gh-canvas-subtle)",
-          }}
-        >
-          <p style={{ color: "var(--gh-fg-muted)" }}>Loading repository...</p>
-        </div>
-      </div>
-    );
-  }
+  const [c] = useState<Case>(() => loadOrSeedDemoCase(owner, name));
 
   return (
     <CaseProvider value={c}>

@@ -1,4 +1,4 @@
-import { CaseShell } from "@/components/repo/case-shell";
+import CaseShell from "@/components/repo/case-shell-mount";
 
 export default async function CaseLayout({
   params,
