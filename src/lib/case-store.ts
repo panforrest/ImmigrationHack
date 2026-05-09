@@ -34,10 +34,32 @@ export function loadCase(owner: string, name: string): Case | null {
   try {
     const raw = localStorage.getItem(KEY_PREFIX + `${owner}/${name}`);
     if (!raw) return null;
-    return JSON.parse(raw) as Case;
+    const parsed = JSON.parse(raw) as Case;
+    if (!isValidCase(parsed)) {
+      // Schema drifted (older hackathon iteration cached a stale shape).
+      // Drop the entry so the caller re-seeds a fresh demo case.
+      localStorage.removeItem(KEY_PREFIX + `${owner}/${name}`);
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
+}
+
+function isValidCase(c: unknown): c is Case {
+  if (!c || typeof c !== "object") return false;
+  const obj = c as Partial<Case>;
+  return (
+    typeof obj.id === "string" &&
+    typeof obj.owner === "string" &&
+    typeof obj.name === "string" &&
+    Array.isArray(obj.criteria) &&
+    Array.isArray(obj.issues) &&
+    Array.isArray(obj.releases) &&
+    Array.isArray(obj.evidence) &&
+    Array.isArray(obj.commits)
+  );
 }
 
 export function listCaseIds(): string[] {
